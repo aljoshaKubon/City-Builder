@@ -3,10 +3,39 @@ extends Node
 var isBuilding
 var isClearing
 var tilePos
-var tileMap
 
-func _init(map):
-	tileMap = map
+func _init():
+	initTileMatrix()
+	initEntry()
+
+func initEntry():
+	var r = RandomNumberGenerator.new()
+	r.randomize()
+	var randomSide = int(round(r.randf()*3))
+	var entryCoord = r.randi_range(round(Globals.tileMatrixSize/4), Globals.tileMatrixSize-round((Globals.tileMatrixSize/4)))
+	
+	match(randomSide):
+		0: #left
+			Globals.tileMatrix[0][entryCoord] = 1;
+			Globals.entry = Vector2(0, entryCoord)
+		1: #top
+			Globals.tileMatrix[entryCoord][0] = 1;
+			Globals.entry = Vector2(entryCoord, 0)
+		2: #right
+			Globals.tileMatrix[Globals.tileMatrixSize-1][entryCoord] = 1;
+			Globals.entry = Vector2(Globals.tileMatrixSize-1, entryCoord)
+		3: #button
+			Globals.tileMatrix[entryCoord][Globals.tileMatrixSize-1] = 1;
+			Globals.entry = Vector2(entryCoord, Globals.tileMatrixSize-1)
+
+func initTileMatrix():
+	Globals.tileMatrix = []
+	for x in range(Globals.tileMatrixSize):
+		Globals.tileMatrix.append([])
+		Globals.tileMatrix[x] = []
+		for y in range(Globals.tileMatrixSize):
+			Globals.tileMatrix[x].append([])
+			Globals.tileMatrix[x][y]=0
 
 func _input(event):
 	if event.is_action_pressed("mouse_left"):
@@ -22,21 +51,22 @@ func _input(event):
 	if event.is_action_released("mouse_right"):
 		isClearing = false
 
+# warning-ignore:unused_argument
 func _process(delta):
-	tilePos = tileMap.world_to_map(tileMap.get_global_mouse_position())
+	tilePos = Globals.tileMap.world_to_map(Globals.tileMap.get_global_mouse_position())
 	
 	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
 		if isBuilding && canBuild(tilePos):
-			tileMap.buildTile(tilePos.x, tilePos.y, false)
+			Globals.tileMap.buildTile(tilePos.x, tilePos.y, false)
 			_updateTileMatrix()
 		if isClearing && canClear(tilePos):
-			tileMap.clearTile(tilePos.x, tilePos.y)
+			Globals.tileMap.clearTile(tilePos.x, tilePos.y)
 			_updateTileMatrix()
 
 func _updateTileMatrix():
 	for x in range(Globals.tileMatrixSize):
 		for y in range(Globals.tileMatrixSize):
-			Globals.tileMatrix[x][y] = tileMap.get_cell(x,y)
+			Globals.tileMatrix[x][y] = Globals.tileMap.get_cell(x,y)
 
 func canBuild(cell):
 	if Globals.buildMode == 1:
