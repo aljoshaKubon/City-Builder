@@ -1,6 +1,7 @@
 extends TileMap
 
 var tilePos;
+onready var buildManager = get_parent()
 
 func _ready():
 	tilePos = Vector2(-1, -1);
@@ -16,6 +17,7 @@ func _process(delta):
 	setTilePos();
 	drawCursor();
 	drawBuildable();
+	drawUnreachable()
 
 func drawCursor():
 	self.set_cell(tilePos.x, tilePos.y, 0);
@@ -32,6 +34,12 @@ func drawBuildable():
 			for y in range(Globals.tileMatrixSize):
 				if isBuildable(x, y):
 					self.set_cell(x, y, 1)
+
+func drawUnreachable():
+	var unreachableTiles = buildManager.getUnreachableRoad()
+	if unreachableTiles.size() != 0:
+		for tile in unreachableTiles:
+			self.set_cell(tile.x, tile.y, 2)
 
 func isBuildable(cellX, cellY):
 	var neighbors = getNeighbors(cellX, cellY)

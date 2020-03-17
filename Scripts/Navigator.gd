@@ -1,57 +1,46 @@
 extends Node
 
-onready var line = Line2D.new()
 onready var astar = AStar.new()
 
 var half_cell_size
 var traversable_tiles
-var used_rect
 
-func _ready():
-	add_child(line)
-	self.half_cell_size = Globals.tileMap.cell_size/2
-	self.used_rect = Globals.tileMap.get_used_rect()
-
-func _process(delta):
-	astar.clear()
-	self.traversable_tiles = Globals.tileMap.getTraversableTiles()
-	addTraversableTiles(traversable_tiles)
-	connectTraversableTiles(traversable_tiles)
-	
-	line.clear_points()
-	var points = get_computed_path(Globals.tileMap.map_to_world(Globals.entry), Globals.tileMap.map_to_world(Globals.cursorCoords))
-	if points != null:
-		line.points = points
-
-func addTraversableTiles(traversableTiles):
+func addTraversableTiles(traversableTiles, used_rect):
 	for tile in traversableTiles:
-		var id = getIdForPoint(tile)
+		var id = getIdForPoint(tile, used_rect)
 		astar.add_point(id, Vector3(tile.x, tile.y, 0))
 
-func connectTraversableTiles(traversableTiles):
+func connectTraversableTiles(traversableTiles, used_rect):
 	for tile in traversableTiles:
-		var id = getIdForPoint(tile)
-		
-		for x in range(3):
-			for y in range(3):
-				var target = tile + Vector2(x-1, y-1)
-				var targetID = getIdForPoint(target)
-				if tile == target or not astar.has_point(targetID):
-					continue
-				astar.connect_points(id, targetID, true)
+		var id = getIdForPoint(tile, used_rect)
+		connectTraversableTile(tile, Vector2(tile.x-1, tile.y), used_rect)
+		connectTraversableTile(tile, Vector2(tile.x, tile.y-1), used_rect)
+		connectTraversableTile(tile, Vector2(tile.x+1, tile.y), used_rect)
+		connectTraversableTile(tile, Vector2(tile.x, tile.y+1), used_rect)
 
-func getIdForPoint(point):
+func connectTraversableTile(tile, target, used_rect):
+	if not(tile == target || not astar.has_point(getIdForPoint(target, used_rect))):
+		astar.connect_points(getIdForPoint(tile, used_rect), getIdForPoint(target, used_rect))
+
+func getIdForPoint(point, used_rect):
 	var x = point.x - used_rect.position.x
 	var y = point.y - used_rect.position.y
 	return x+y * used_rect.size.x
 
-func get_computed_path(start, end):
-	var start_tile = Globals.tileMap.world_to_map(start)
-	var end_tile = Globals.tileMap.world_to_map(end)
+func get_computed_path(tileMap, traversablePoints, start, end):
+	var used_rect = tileMap.get_used_rect()
+	var half_cell_size = tileMap.get_cell_size()/2
 	
-	var start_id = getIdForPoint(start_tile)
-	var end_id = getIdForPoint(end_tile)
+	var start_tile = tileMap.world_to_map(start)
+	var end_tile = tileMap.world_to_map(end)
 	
+	var start_id = getIdForPoint(start_tile, used_rect)
+	var end_id = getIdForPoint(end_tile, used_rect)
+	
+	astar.clear()
+	addTraversableTiles(traversablePoints, used_rect)
+	connectTraversableTiles(traversablePoints, used_rect)
+
 	if not astar.has_point(start_id) or not astar.has_point(end_id):
 		return null
 	
@@ -59,6 +48,6 @@ func get_computed_path(start, end):
 	
 	var path_world = []
 	for point in path_map:
-		var point_world = Globals.tileMap.map_to_world(Vector2(point.x, point.y)) + half_cell_size
+		var point_world = tileMap.map_to_world(Vector2(point.x, point.y)) + half_cell_size
 		path_world.append(point_world)
 	return path_world

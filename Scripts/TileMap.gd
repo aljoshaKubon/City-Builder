@@ -3,10 +3,8 @@ extends TileMap
 var isBuilding
 var isClearing
 
-func _init():
-	initTileMap()
-
 func _ready():
+	initTileMap()
 	isBuilding = false
 	isClearing = false
 
@@ -130,11 +128,3 @@ func getNeighbors(cellX, cellY):
 	neighbors[2] = self.get_cell(cellX+1, cellY)
 	neighbors[3] = self.get_cell(cellX, cellY+1)
 	return neighbors
-
-func getTraversableTiles():
-	var traversableTiles = []
-	for x in range(Globals.tileMatrixSize):
-		for y in range(Globals.tileMatrixSize):
-			if isRoad(self.get_cell(x,y)):
-				traversableTiles.append(Vector2(x,y))
-	return traversableTiles

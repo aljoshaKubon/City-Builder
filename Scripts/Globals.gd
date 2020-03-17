@@ -6,7 +6,8 @@ var money = 1000
 var buildMode = 0
 var tileMatrix
 var tileMatrixSize = 32
-var tileMap
 var cursorCoords
 var population = 0
 var entry;
+var buildManager
+var roadHasChanged = false

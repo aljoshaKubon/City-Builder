@@ -4,9 +4,15 @@ var isBuilding
 var isClearing
 var tilePos
 
-func _init():
+onready var tileMap = load("res://Scenes/TileMap.tscn").instance()
+onready var tileMapOutline = load("res://Scenes/Outline.tscn").instance()
+
+func _ready():
 	initTileMatrix()
 	initEntry()
+
+	add_child(tileMap)
+	add_child(tileMapOutline)
 
 func initEntry():
 	var r = RandomNumberGenerator.new()
@@ -53,20 +59,20 @@ func _input(event):
 
 # warning-ignore:unused_argument
 func _process(delta):
-	tilePos = Globals.tileMap.world_to_map(Globals.tileMap.get_global_mouse_position())
+	tilePos = tileMap.world_to_map(tileMap.get_global_mouse_position())
 	
 	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
 		if isBuilding && canBuild(tilePos):
-			Globals.tileMap.buildTile(tilePos.x, tilePos.y, false)
+			tileMap.buildTile(tilePos.x, tilePos.y, false)
 			_updateTileMatrix()
 		if isClearing && canClear(tilePos):
-			Globals.tileMap.clearTile(tilePos.x, tilePos.y)
+			tileMap.clearTile(tilePos.x, tilePos.y)
 			_updateTileMatrix()
 
 func _updateTileMatrix():
 	for x in range(Globals.tileMatrixSize):
 		for y in range(Globals.tileMatrixSize):
-			Globals.tileMatrix[x][y] = Globals.tileMap.get_cell(x,y)
+			Globals.tileMatrix[x][y] = tileMap.get_cell(x,y)
 
 func canBuild(cell):
 	if Globals.buildMode == 1:
@@ -104,3 +110,21 @@ func getNeighbor(cellX, cellY):
 		return Globals.tileMatrix[cellX][cellY]
 	else:
 		return -1;
+
+func getTraversableTiles():
+	var traversableTiles = []
+	for x in range(Globals.tileMatrixSize):
+		for y in range(Globals.tileMatrixSize):
+			if isRoad(Globals.tileMatrix[x][y]):
+				traversableTiles.append(Vector2(x,y))
+	return traversableTiles
+
+func getUnreachableRoad():
+	var roadTiles = getTraversableTiles()
+	var entry = tileMap.map_to_world(Globals.entry)
+	var unreachableList = []
+	for tile in roadTiles:
+		var target = tileMap.map_to_world(tile)
+		if Navigator.get_computed_path(tileMap, roadTiles, entry, target) == []:
+			unreachableList.append(tileMap.world_to_map(target))
+	return unreachableList
