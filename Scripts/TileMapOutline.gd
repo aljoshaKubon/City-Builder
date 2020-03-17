@@ -6,37 +6,25 @@ onready var buildManager = get_parent()
 func _ready():
 	tilePos = Vector2(-1, -1);
 
-func setTilePos():
-	var mousePos = get_global_mouse_position();
-	tilePos = self.world_to_map(mousePos);
-
 #warning-ignore:unused_argument
 func _process(delta):
-	self.clear();
-	
-	setTilePos();
 	drawCursor();
-	drawBuildable();
-	drawUnreachable()
 
 func drawCursor():
-	self.set_cell(tilePos.x, tilePos.y, 0);
-	Globals.cursorCoords = Vector2(tilePos.x, tilePos.y);
+	var mousePos = get_global_mouse_position();
+	if self.world_to_map(mousePos) != tilePos:
+		if !buildManager.buildableCells.has(tilePos) && !buildManager.unreachableCells.has(tilePos):
+			self.set_cell(tilePos.x, tilePos.y, -1)
+		tilePos = self.world_to_map(mousePos);
+		self.set_cell(tilePos.x, tilePos.y, 0);
+		Globals.cursorCoords = Vector2(tilePos.x, tilePos.y);
 
-func drawBuildable():
-	if Globals.buildMode == 1:
-		for x in range(Globals.tileMatrixSize):
-			for y in range(Globals.tileMatrixSize):
-				if isBuildable(x, y):
-					self.set_cell(x, y, 1);
-	elif Globals.buildMode == 2:
-		for x in range(Globals.tileMatrixSize):
-			for y in range(Globals.tileMatrixSize):
-				if isBuildable(x, y):
-					self.set_cell(x, y, 1)
+func drawBuildable(buildableCells):
+	self.clear();
+	for cell in buildableCells:
+		self.set_cell(cell.x, cell.y, 1)
 
-func drawUnreachable():
-	var unreachableTiles = buildManager.getUnreachableRoad()
+func drawUnreachable(unreachableTiles):
 	if unreachableTiles.size() != 0:
 		for tile in unreachableTiles:
 			self.set_cell(tile.x, tile.y, 2)

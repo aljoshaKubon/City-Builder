@@ -1,8 +1,11 @@
 extends Node
 
-var isBuilding
-var isClearing
-var tilePos
+var isBuilding = false
+var isClearing = false
+var tilePos = Vector2()
+var traversableTiles = []
+var buildableCells = []
+var unreachableCells = []
 
 onready var tileMap = load("res://Scenes/TileMap.tscn").instance()
 onready var tileMapOutline = load("res://Scenes/Outline.tscn").instance()
@@ -10,9 +13,11 @@ onready var tileMapOutline = load("res://Scenes/Outline.tscn").instance()
 func _ready():
 	initTileMatrix()
 	initEntry()
-
+	traversableTiles.append(Globals.entry)
+	
 	add_child(tileMap)
 	add_child(tileMapOutline)
+	calculateBuildableCells()
 
 func initEntry():
 	var r = RandomNumberGenerator.new()
@@ -64,10 +69,19 @@ func _process(delta):
 	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
 		if isBuilding && canBuild(tilePos):
 			tileMap.buildTile(tilePos.x, tilePos.y, false)
-			_updateTileMatrix()
+			traversableTiles.append(tilePos)
+			updateChanges()
 		if isClearing && canClear(tilePos):
 			tileMap.clearTile(tilePos.x, tilePos.y)
-			_updateTileMatrix()
+			traversableTiles.erase(tilePos)
+			updateChanges()
+
+func updateChanges():
+	calculateBuildableCells()
+	calculateUnreachableCells()
+	tileMapOutline.drawBuildable(buildableCells)
+	tileMapOutline.drawUnreachable(unreachableCells)
+	_updateTileMatrix()
 
 func _updateTileMatrix():
 	for x in range(Globals.tileMatrixSize):
@@ -92,6 +106,21 @@ func isRoad(tile):
 func isHouse(tile):
 	return tile == 6 || tile == 7 || tile == 8
 
+func calculateBuildableCells():
+	buildableCells = []
+	for x in range(Globals.tileMatrixSize):
+		for y in range(Globals.tileMatrixSize):
+			if isBuildable(Vector2(x, y)):
+				buildableCells.append(Vector2(x, y))
+
+func calculateUnreachableCells():
+	unreachableCells = []
+	var entry = tileMap.map_to_world(Globals.entry)
+	for tile in traversableTiles:
+		var target = tileMap.map_to_world(tile)
+		if Navigator.get_computed_path(tileMap, traversableTiles, entry, target) == []:
+			unreachableCells.append(tileMap.world_to_map(target))
+
 func isBuildable(cell):
 	var neighbors = getNeighbors(cell.x, cell.y)
 	return Globals.tileMatrix[cell.x][cell.y] == 0 && (isRoad(neighbors[0]) || isRoad(neighbors[1]) || isRoad(neighbors[2]) || isRoad(neighbors[3]))
@@ -110,21 +139,3 @@ func getNeighbor(cellX, cellY):
 		return Globals.tileMatrix[cellX][cellY]
 	else:
 		return -1;
-
-func getTraversableTiles():
-	var traversableTiles = []
-	for x in range(Globals.tileMatrixSize):
-		for y in range(Globals.tileMatrixSize):
-			if isRoad(Globals.tileMatrix[x][y]):
-				traversableTiles.append(Vector2(x,y))
-	return traversableTiles
-
-func getUnreachableRoad():
-	var roadTiles = getTraversableTiles()
-	var entry = tileMap.map_to_world(Globals.entry)
-	var unreachableList = []
-	for tile in roadTiles:
-		var target = tileMap.map_to_world(tile)
-		if Navigator.get_computed_path(tileMap, roadTiles, entry, target) == []:
-			unreachableList.append(tileMap.world_to_map(target))
-	return unreachableList

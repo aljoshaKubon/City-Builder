@@ -133,3 +133,4 @@ tile_set = SubResource( 6 )
 cell_size = Vector2( 32, 32 )
 format = 1
 script = ExtResource( 10 )
+
