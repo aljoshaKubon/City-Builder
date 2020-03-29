@@ -17,5 +17,6 @@ func _ready():
 	Globals.state = "Game"
 
 func _process(delta):
-	cityManager.update(delta)
+	cityManager.update()
+	buildManager.update()
 	gui.update()

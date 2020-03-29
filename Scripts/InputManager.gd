@@ -42,3 +42,5 @@ func _input(event):
 	
 		if event.is_action_pressed("ui_cancel"):
 			Globals.gui.toggle("SettingsMenu")
+		if event.is_action_pressed("ui_buildMenu_toggle"):
+			Globals.gui.toggle("BuildMenu")

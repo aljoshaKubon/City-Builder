@@ -9,7 +9,7 @@ func _ready():
 	timer.set_one_shot(true)
 	timer.start(delay)
 
-func update(delta):
+func update():
 	pass
 
 func _on_timer_timeout():

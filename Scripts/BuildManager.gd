@@ -49,7 +49,7 @@ func initTileMatrix():
 			Globals.tileMatrix[x][y]=-1
 			
 # warning-ignore:unused_argument
-func update(delta):
+func update():
 	tilePos = tileMap.world_to_map(tileMap.get_global_mouse_position())
 	
 	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
