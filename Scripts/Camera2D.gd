@@ -23,27 +23,3 @@ func zoom(value):
 
 func isMoving():
 	return _dir != Vector2(0,0);
-
-func _input(event):
-	if event.is_action_pressed("ui_left"):
-		_dir.x = -1;
-	if event.is_action_pressed("ui_right"):
-		_dir.x = 1;
-	if event.is_action_pressed("ui_down"):
-		_dir.y = 1;
-	if event.is_action_pressed("ui_up"):
-		_dir.y = -1;
-		
-	if event.is_action_pressed("zoom_in"):
-		zoom(-0.05);
-	if event.is_action_pressed("zoom_out"):
-		zoom(0.05);
-
-	if event.is_action_released("ui_left"):
-		_dir.x = 0;
-	if event.is_action_released("ui_right"):
-		_dir.x = 0;
-	if event.is_action_released("ui_down"):
-		_dir.y = 0;
-	if event.is_action_released("ui_up"):
-		_dir.y = 0;

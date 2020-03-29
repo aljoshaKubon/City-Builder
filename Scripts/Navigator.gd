@@ -2,9 +2,6 @@ extends Node
 
 onready var astar = AStar.new()
 
-var half_cell_size
-var traversable_tiles
-
 func addTraversableTiles(traversableTiles, used_rect):
 	for tile in traversableTiles:
 		var id = getIdForPoint(tile, used_rect)
@@ -12,7 +9,6 @@ func addTraversableTiles(traversableTiles, used_rect):
 
 func connectTraversableTiles(traversableTiles, used_rect):
 	for tile in traversableTiles:
-		var id = getIdForPoint(tile, used_rect)
 		connectTraversableTile(tile, Vector2(tile.x-1, tile.y), used_rect)
 		connectTraversableTile(tile, Vector2(tile.x, tile.y-1), used_rect)
 		connectTraversableTile(tile, Vector2(tile.x+1, tile.y), used_rect)

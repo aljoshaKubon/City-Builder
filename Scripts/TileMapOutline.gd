@@ -10,6 +10,7 @@ func _ready():
 func _process(delta):
 	drawCursor();
 
+#TODO: Optimieren, Cursor und BuildableCells werden doppelt gemalt und erscheinen dicker
 func drawCursor():
 	var mousePos = get_global_mouse_position();
 	if self.world_to_map(mousePos) != tilePos:
