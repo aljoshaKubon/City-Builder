@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Tab.png-fe4f25b4b1ada147c59697e5f968a273.stex"
+path="res://.import/Tab_fg.png-d8195fb2caa0b06bec4269cf7b628e2b.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/GUI/Panel/Tab.png"
-dest_files=[ "res://.import/Tab.png-fe4f25b4b1ada147c59697e5f968a273.stex" ]
+source_file="res://Assets/GUI/Panel/Tab_fg.png"
+dest_files=[ "res://.import/Tab_fg.png-d8195fb2caa0b06bec4269cf7b628e2b.stex" ]
 
 [params]
 

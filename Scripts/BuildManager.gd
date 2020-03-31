@@ -1,7 +1,5 @@
 extends Node
 
-var isBuilding = false
-var isClearing = false
 var tilePos = Vector2()
 var traversableTiles = []
 var buildableCells = []
@@ -11,80 +9,57 @@ onready var tileMap = load("res://Scenes/TileMap.tscn").instance()
 onready var tileMapOutline = load("res://Scenes/Outline.tscn").instance()
 
 func _ready():
-	initTileMatrix()
-	initEntry()
-	traversableTiles.append(Globals.entry)
-	
+#warning-ignore:return_value_discarded
+	InputManager.connect("build", self, "_on_build")
+#warning-ignore:return_value_discarded
+	InputManager.connect("clear", self, "_on_clear")
+
+func _on_build():
+	tilePos = tileMap.world_to_map(tileMap.get_global_mouse_position())
+	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
+		tileMap.buildTile(tilePos.x, tilePos.y, false)
+		updateChanges()
+
+func _on_clear():
+	tilePos = tileMap.world_to_map(tileMap.get_global_mouse_position())
+	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
+		tileMap.clearTile(tilePos.x, tilePos.y)
+		updateChanges()
+
+func init():
 	add_child(tileMap)
 	add_child(tileMapOutline)
-	updateChanges(tilePos)
 
-func initEntry():
-	var r = RandomNumberGenerator.new()
-	r.randomize()
-	var randomSide = int(round(r.randf()*3))
-	var entryCoord = r.randi_range(round(Globals.tileMatrixSize/4), Globals.tileMatrixSize-round((Globals.tileMatrixSize/4)))
-	
-	match(randomSide):
-		0: #left
-			Globals.tileMatrix[0][entryCoord] = 0;
-			Globals.entry = Vector2(0, entryCoord)
-		1: #top
-			Globals.tileMatrix[entryCoord][0] = 0;
-			Globals.entry = Vector2(entryCoord, 0)
-		2: #right
-			Globals.tileMatrix[Globals.tileMatrixSize-1][entryCoord] = 0;
-			Globals.entry = Vector2(Globals.tileMatrixSize-1, entryCoord)
-		3: #button
-			Globals.tileMatrix[entryCoord][Globals.tileMatrixSize-1] = 0;
-			Globals.entry = Vector2(entryCoord, Globals.tileMatrixSize-1)
-
-func initTileMatrix():
-	Globals.tileMatrix = []
-	for x in range(Globals.tileMatrixSize):
-		Globals.tileMatrix.append([])
-		Globals.tileMatrix[x] = []
-		for y in range(Globals.tileMatrixSize):
-			Globals.tileMatrix[x].append([])
-			Globals.tileMatrix[x][y]=-1
-			
-# warning-ignore:unused_argument
-func update():
-	tilePos = tileMap.world_to_map(tileMap.get_global_mouse_position())
-	
-	if tilePos.x >= 0 && tilePos.x < Globals.tileMatrixSize && tilePos.y >= 0 && tilePos.y < Globals.tileMatrixSize:
-		if isBuilding && canBuild(tilePos):
-			tileMap.buildTile(tilePos.x, tilePos.y, false)
-			traversableTiles.append(tilePos)
-			updateChanges(tilePos)
-		elif isClearing && canClear(tilePos):
-			tileMap.clearTile(tilePos.x, tilePos.y)
-			traversableTiles.erase(tilePos)
-			updateChanges(tilePos)
-
-func updateChanges(tilePos):
-	_updateTileMatrix(tilePos)
-	calculateBuildableCells(tilePos)
+func updateChanges():
+	updateTileMatrix()
+	#calculateBuildableCells()
 	tileMapOutline.drawBuildable(buildableCells)
 	tileMapOutline.drawUnreachable(unreachableCells)
 
-func _updateTileMatrix(tilePos):
+func updateTileMatrix():
+	print("TODO: updateTileMatrix(tilePos in BuildManager")
+	#TODO: Update nur das veränderte Tile
+	
 	for x in range(Globals.tileMatrixSize):
 		for y in range(Globals.tileMatrixSize):
 			Globals.tileMatrix[x][y] = tileMap.get_cell(x,y)
 	#Globals.tileMatrix[tilePos.x][tilePos.y] = tileMap.get_cell(tilePos.x,tilePos.y)
 
+#warning-ignore:unused_argument
 func canBuild(cell):
-	if Globals.buildMode == 1:
-		return isBuildable(cell)
-	elif Globals.buildMode == 2:
-		return isBuildable(cell)
+	print("TODO: canBuild(cell) in BuildManager")
+	#if Globals.buildMode == 1:
+	#	return isBuildable(cell)
+	#elif Globals.buildMode == 2:
+	#	return isBuildable(cell)
 
+#warning-ignore:unused_argument
 func canClear(cell):
-	if Globals.buildMode == 1:
-		return isRoad(Globals.tileMatrix[cell.x][cell.y])
-	elif Globals.buildMode == 2:
-		return isHouse(Globals.tileMatrix[cell.x][cell.y])
+	print("TODO: canClear(cell) in BuildManager")
+	#if Globals.buildMode == 1:
+	#	return isRoad(Globals.tileMatrix[cell.x][cell.y])
+	#elif Globals.buildMode == 2:
+	#	return isHouse(Globals.tileMatrix[cell.x][cell.y])
 
 func isRoad(tile):
 	return tile == 0 || tile == 1 || tile == 2 || tile == 3 || tile == 4
@@ -92,7 +67,7 @@ func isRoad(tile):
 func isHouse(tile):
 	return tile == 5 || tile == 6 || tile == 7 || tile == 8 || tile == 9 || tile == 10 || tile == 11 || tile == 12 || tile == 13 || tile == 14 || tile == 15 || tile == 16
 
-func calculateBuildableCells(tilePos):
+func calculateBuildableCells():
 	buildableCells = []
 	for x in range(Globals.tileMatrixSize):
 		for y in range(Globals.tileMatrixSize):

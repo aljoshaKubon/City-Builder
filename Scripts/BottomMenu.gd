@@ -1,11 +1,8 @@
 extends Control
 
-onready var foldedMenu = get_node("Folded")
-
-var currentMenu
-
-func _ready():
-	currentMenu = foldedMenu
+onready var label_money = get_node("BottomPanel/HBoxContainer/Finanzen/Money/MarginContainer/Money");
+onready var label_population = get_node("BottomPanel/HBoxContainer/Population/Population/MarginContainer/Population")
 
 func update():
-	currentMenu.update()
+	label_money.text = str(Globals.money)
+	label_population.text = str(Globals.population)

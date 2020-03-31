@@ -23,6 +23,8 @@ config/icon="res://Assets/Car.png"
 
 Globals="*res://Scripts/Globals.gd"
 Navigator="*res://Scripts/Navigator.gd"
+InputManager="*res://Scripts/InputManager.gd"
+GlobalDictionary="*res://Scripts/GlobalDictionary.gd"
 
 [display]
 

@@ -8,7 +8,8 @@ func _ready():
 
 #warning-ignore:unused_argument
 func _process(delta):
-	drawCursor();
+	if Globals.state == "Game":
+		drawCursor();
 
 #TODO: Optimieren, Cursor und BuildableCells werden doppelt gemalt und erscheinen dicker
 func drawCursor():

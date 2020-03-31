@@ -2,46 +2,35 @@ extends TileMap
 
 var isBuilding
 var isClearing
-onready var grassTileMap = get_node("Grass")
 
 func _ready():
-	initTileMap()
 	isBuilding = false
 	isClearing = false
+	initTileMap()
 
 func initTileMap():
-	var tileMatrix = Globals.tileMatrix
-	for x in range(Globals.tileMatrixSize):
-		for y in range(Globals.tileMatrixSize):
-			if Vector2(x,y) == Globals.entry:
-				initEntry(x,y);
-
-func initEntry(cellX, cellY):
-	if cellX == 0 || cellX == Globals.tileMatrixSize-1:
-		buildRoadTile(cellX, cellY, 0, false, false, true)
-		for i in range(10):
-			if cellX == 0:
-				self.set_cell(cellX-i, cellY, 0, false, false, true)
-			if cellX == Globals.tileMatrixSize-1:
-				self.set_cell(cellX+i, cellY, 0, false, false, true)
-	else:
-		self.set_cell(cellX, cellY, 0, false, false, false)
+	for x in Globals.tileMatrixSize:
+		for y in Globals.tileMatrixSize:
+			self.set_cell(x,y, Globals.tileMatrix[x][y])
 
 func buildTile(cellX, cellY, isCorrecting):
-		if Globals.buildMode == 1:
-			buildRoad(cellX, cellY, isCorrecting)
-		elif Globals.buildMode == 2:
-			buildHouse(cellX, cellY)
-			Globals.population = Globals.population + 5
-		if grassTileMap.isTree(cellX, cellY):
-			grassTileMap.set_cell(cellX, cellY, 0)
+	#self.set_cell(cellX, cellY, GlobalDictionary.buildItems[Globals.buildID])
+	print("TODO buildTile in TileMap called by BuildManager.build()")
+	#	if Globals.buildMode == 1:
+	#			buildRoad(cellX, cellY, isCorrecting)
+	#	elif Globals.buildMode == 2:
+	#		buildHouse(cellX, cellY)
+	#		Globals.population = Globals.population + 5
+	#	if grassTileMap.isTree(cellX, cellY):
+	#		grassTileMap.set_cell(cellX, cellY, 0)
 
 func clearTile(cellX, cellY):
-	self.set_cell(cellX, cellY, -1)
-	if Globals.buildMode == 1:
-		correctNeighbors(cellX, cellY)
+	print("TODO clearTile in TileMap called by BuildManager.clear()")
+	#self.set_cell(cellX, cellY, -1)
+	#if Globals.buildMode == 1:
+	#	correctNeighbors(cellX, cellY)
 
-func buildRoad(cellX, cellY, isCorrecting):
+func buildRoad(cellX, cellY, isCorrecting): 
 	var neighbors = getNeighbors(cellX, cellY)
 	#Intersection
 	if isRoad(neighbors[0]) && isRoad(neighbors[1]) && isRoad(neighbors[2]) && isRoad(neighbors[3]):

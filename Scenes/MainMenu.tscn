@@ -18,6 +18,7 @@ size = 54
 font_data = ExtResource( 3 )
 
 [node name="MainMenu" type="Control"]
+editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
@@ -29,22 +30,21 @@ margin_bottom = 40.0
 texture = ExtResource( 2 )
 
 [node name="MarginBox" type="MarginContainer" parent="TextureRect"]
-editor/display_folded = true
 margin_top = -1.05264
 margin_right = 672.0
 margin_bottom = 311.947
+rect_min_size = Vector2( 1024, 600 )
 custom_constants/margin_top = 100
-custom_constants/margin_left = 380
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="TextureRect/MarginBox"]
-margin_left = 380.0
+editor/display_folded = true
 margin_top = 100.0
-margin_right = 672.0
-margin_bottom = 459.0
+margin_right = 1024.0
+margin_bottom = 600.0
 custom_constants/separation = 100
 
 [node name="Label" type="Label" parent="TextureRect/MarginBox/VBoxContainer2"]
-margin_right = 292.0
+margin_right = 1024.0
 margin_bottom = 55.0
 custom_fonts/font = SubResource( 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
@@ -52,45 +52,46 @@ text = "City Builder"
 align = 1
 valign = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="TextureRect/MarginBox/VBoxContainer2"]
+[node name="CenterContainer" type="CenterContainer" parent="TextureRect/MarginBox/VBoxContainer2"]
+editor/display_folded = true
 margin_top = 155.0
-margin_right = 292.0
+margin_right = 1024.0
 margin_bottom = 359.0
-custom_constants/margin_left = 40
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect/MarginBox/VBoxContainer2/MarginContainer"]
-margin_left = 40.0
-margin_right = 292.0
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect/MarginBox/VBoxContainer2/CenterContainer"]
+margin_left = 406.0
+margin_right = 618.0
 margin_bottom = 204.0
 
-[node name="New Game" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer"]
-margin_right = 252.0
+[node name="New Game" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer"]
+margin_right = 212.0
 margin_bottom = 48.0
 texture_normal = ExtResource( 4 )
 texture_pressed = ExtResource( 5 )
 
-[node name="Load Game" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer"]
+[node name="Load Game" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer"]
 margin_top = 52.0
-margin_right = 252.0
+margin_right = 212.0
 margin_bottom = 100.0
 texture_normal = ExtResource( 6 )
 texture_pressed = ExtResource( 7 )
 texture_disabled = ExtResource( 8 )
 
-[node name="Options" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer"]
+[node name="Options" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer"]
 margin_top = 104.0
-margin_right = 252.0
+margin_right = 212.0
 margin_bottom = 152.0
 texture_normal = ExtResource( 9 )
 texture_pressed = ExtResource( 10 )
 
-[node name="Exit" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer"]
+[node name="Exit" type="TextureButton" parent="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer"]
 margin_top = 156.0
-margin_right = 252.0
+margin_right = 212.0
 margin_bottom = 204.0
 texture_normal = ExtResource( 11 )
 texture_pressed = ExtResource( 12 )
 
-[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer/New Game" to="." method="_on_New_Game_pressed"]
-[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer/Load Game" to="." method="_on_Load_Game_pressed"]
-[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/MarginContainer/VBoxContainer/Exit" to="." method="_on_Exit_pressed"]
+[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer/New Game" to="." method="_on_New_Game_pressed"]
+[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer/Load Game" to="." method="_on_Load_Game_pressed"]
+[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer/Options" to="." method="_on_Options_pressed"]
+[connection signal="pressed" from="TextureRect/MarginBox/VBoxContainer2/CenterContainer/VBoxContainer/Exit" to="." method="_on_Exit_pressed"]

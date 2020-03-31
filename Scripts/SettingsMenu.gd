@@ -16,5 +16,6 @@ func _on_Load_pressed():
 	pass # Replace with function body.
 
 func _on_Exit_pressed():
+	#warning-ignore:return_value_discarded
 	get_tree().change_scene("res://Scenes/MainMenu.tscn")
 	Globals.state = "Menu"

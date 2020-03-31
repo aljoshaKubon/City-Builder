@@ -5,13 +5,11 @@ func _ready():
 
 func initTileMap():
 	var random = RandomNumberGenerator.new()
-	var tileMatrix = Globals.tileMatrix
 	random.randomize()
 	
 	for x in range(Globals.tileMatrixSize):
 		for y in range(Globals.tileMatrixSize):
 			initBackroundTile(x, y, random)
-			
 
 func initBackroundTile(x, y, random):
 	var randomInteger = random.randi_range(0,10)
@@ -27,6 +25,3 @@ func initBackroundTile(x, y, random):
 
 func isTree(x, y):
 	return self.get_cell(x, y) == 3
-	
-	
-
